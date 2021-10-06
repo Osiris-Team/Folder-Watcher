@@ -8,6 +8,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
+import java.text.DateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -31,10 +35,11 @@ public class ViewMain extends JPanel {
         lyControls.add(jButton);
 
         Column cFileName = new Column("File", null);
+        Column cSizeMb = new Column("Size (Mb)", null);
         Column cEventType = new Column("Type", null);
         Column cDate = new Column("Date", null);
         Column cFullPath = new Column("Path", null);
-        Table eventsTable = new Table(cFileName, cEventType, cDate, cFullPath);
+        Table eventsTable = new Table(cFileName, cSizeMb, cEventType, cDate, cFullPath);
         JScrollPane scrollPane = new JScrollPane(eventsTable);
         this.add(scrollPane);
 
@@ -88,14 +93,14 @@ public class ViewMain extends JPanel {
                         jbl = new JLabel(eventInDir.getWatchEventKind().name());
                         jbl.setForeground(Color.RED);
                     }
-                    else
-                    {
+                    else {
                         jbl = new JLabel(eventInDir.getWatchEventKind().name());
                         jbl.setForeground(Color.MAGENTA);
                     }
 
                     cEventType.addRow(jbl);
-                    cDate.addRow(new JLabel("" + new Date(System.currentTimeMillis())));
+                    cSizeMb.addRow(new JLabel(""+(eventInDir.getFile().length() / 1048576))); // / 1mb in bytes
+                    cDate.addRow(new JLabel("" + DateTimeFormatter.ISO_INSTANT.format(Instant.now())));
                     cFullPath.addRow(new JLabel("" + eventInDir.getFile()));
                     System.out.println(text);
                     updateUI();
