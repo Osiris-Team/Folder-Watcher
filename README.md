@@ -8,5 +8,7 @@ Cross-Platform folder watcher with GUI
  - Run the downloaded .jar file by clicking on it
 
 ## Features
-Insert_a_short_and_consise_list_of_features_here
+ - Watch folders and its subdirectories
+ - Colored file events for easier distinguishing
+ - Detailed information about events (file name, path, size, etc.)
 
