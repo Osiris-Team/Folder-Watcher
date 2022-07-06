@@ -5,7 +5,7 @@ Cross-Platform folder watcher with GUI
 
 ## Installation
  - Minimum [Java 8]() required
- - Download the [Folder-Watcher.jar](Folder-Watcher.jar)
+ - Download the [Folder-Watcher.jar](https://github.com/Osiris-Team/Folder-Watcher/raw/main/Folder-Watcher.jar)
  - Run the downloaded .jar file by clicking on it
 
 ## Features
