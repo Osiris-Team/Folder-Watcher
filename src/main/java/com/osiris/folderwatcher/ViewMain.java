@@ -1,6 +1,7 @@
 package com.osiris.folderwatcher;
 
-import com.osiris.dyml.watcher.DYWatcher;
+
+import com.osiris.dyml.watcher.DirWatcher;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,6 +32,8 @@ public class ViewMain extends JPanel {
         lyControls.add(txtField);
         JCheckBox jCheckBox = new JCheckBox("Watch subdirectories");
         lyControls.add(jCheckBox);
+        JLabel txtInfo = new JLabel("Watching 0 folders.");
+        lyControls.add(txtInfo);
         JButton jButton = new JButton("Watch");
         lyControls.add(jButton);
 
@@ -63,20 +66,24 @@ public class ViewMain extends JPanel {
 
         jButton.addActionListener(event -> {
             try {
-                File fileToWatch = new File(txtField.getText());
-                DYWatcher watcher = DYWatcher.getForFile(fileToWatch, jCheckBox.isValid());
-
                 for (File fileFromList :
                         watchingFiles) {
                     try {
-                        DYWatcher.getForFile(fileFromList, jCheckBox.isValid()).close();
+                        DirWatcher.get(fileFromList, jCheckBox.isSelected())
+                                .close();
                         watchingFiles.remove(fileFromList);
+                        SwingUtilities.invokeLater(() -> txtInfo.setText("Removing ("+watchingFiles.size()+") old watchers..."));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
 
-                watcher.addListeners(eventInDir -> {
+                SwingUtilities.invokeLater(() -> txtInfo.setText("Registering new watchers... (may take a while)"));
+                File fileOrFolderToWatch = new File(txtField.getText());
+                DirWatcher watcher = DirWatcher.get(fileOrFolderToWatch, jCheckBox.isSelected());
+                SwingUtilities.invokeLater(() -> txtInfo.setText("Done! Now watching files."));
+
+                watcher.setListeners(eventInDir -> {
                     String text = new Date(System.currentTimeMillis()) + " | " + eventInDir.getWatchEventContext() + " | " + eventInDir.getWatchEventKind().name();
                     cFileName.addRow(new JLabel("" + eventInDir.getWatchEventContext()));
                     JLabel jbl;
@@ -99,15 +106,14 @@ public class ViewMain extends JPanel {
                     }
 
                     cEventType.addRow(jbl);
-                    cSizeMb.addRow(new JLabel(""+(eventInDir.getFile().length() / 1048576))); // / 1mb in bytes
+                    cSizeMb.addRow(new JLabel(""+(eventInDir.file.length() / 1048576))); // / 1mb in bytes
                     cDate.addRow(new JLabel("" + DateTimeFormatter.ISO_INSTANT.format(Instant.now())));
-                    cFullPath.addRow(new JLabel("" + eventInDir.getFile()));
+                    cFullPath.addRow(new JLabel("" + eventInDir.file));
                     System.out.println(text);
                     updateUI();
                 });
 
-                watchingFiles.add(fileToWatch);
-                lyControls.add(new JLabel("[INFO] Now listening to file events for " + fileToWatch.getAbsolutePath()));
+                watchingFiles.add(fileOrFolderToWatch);
                 updateUI();
                 watcher.printDetails();
             } catch (IOException e) {

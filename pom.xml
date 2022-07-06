@@ -6,7 +6,7 @@
 
     <groupId>com.osiris.folderwatcher</groupId>
     <artifactId>folderwatcher</artifactId>
-    <version>0.4</version>
+    <version>0.5</version>
     <packaging>jar</packaging>
 
     <name>Folder-Watcher</name>
@@ -28,8 +28,8 @@
 
         <dependency>
             <groupId>com.github.Osiris-Team</groupId>
-            <artifactId>Dream-Yaml</artifactId>
-            <version>8.1</version>
+            <artifactId>Dyml</artifactId>
+            <version>9.3.2</version>
         </dependency>
 
         <dependency>
